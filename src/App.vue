@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import words from "./assets/words.json";
-
+import GameToolbar from "@/components/GameToolbar.vue";
 /**
  * State for the typing game
  * @typedef {Object} GameState
@@ -18,7 +18,7 @@ const gameState = ref({
   text: "",
   isStarted: false,
   isFinished: false,
-  wordCount: 25, // Default to 25 words
+  wordCount: 25,
   startTime: null,
   endTime: null,
 });
@@ -174,48 +174,12 @@ onMounted(() => {
 <template>
   <main id="game" class="flex flex-col justify-center max-w-lg min-h-screen mx-auto">
     <div class="flex flex-col gap-2">
-      <section id="toolbar">
-        <div class="flex items-center justify-between px-2">
-          <div id="words-group" class="flex gap-2">
-            <button
-              id="word-option-10"
-              :class="gameState.wordCount === 10 ? 'text-black font-bold' : 'text-gray-500'"
-              @click="setWordCount(10)"
-            >
-              10
-            </button>
-            <span class="text-gray-500">/</span>
-            <button
-              id="word-option-25"
-              :class="gameState.wordCount === 25 ? 'text-black font-bold' : 'text-gray-500'"
-              @click="setWordCount(25)"
-            >
-              25
-            </button>
-            <span class="text-gray-500">/</span>
-            <button
-              id="word-option-50"
-              :class="gameState.wordCount === 50 ? 'text-black font-bold' : 'text-gray-500'"
-              @click="setWordCount(50)"
-            >
-              50
-            </button>
-            <span class="text-gray-500">/</span>
-            <button
-              id="word-option-100"
-              :class="gameState.wordCount === 100 ? 'text-black font-bold' : 'text-gray-500'"
-              @click="setWordCount(100)"
-            >
-              100
-            </button>
-          </div>
-          <div id="stats" class="flex gap-2 text-gray-500">
-            <p>WPM: {{ wpm }}</p>
-            <span class="text-gray-500">/</span>
-            <p>ACC: {{ accuracy }}</p>
-          </div>
-        </div>
-      </section>
+      <GameToolbar
+        :wordCount="gameState.wordCount"
+        :wpm="wpm"
+        :accuracy="accuracy"
+        @setWordCount="setWordCount"
+      />
       <section id="game">
         <Card class="flex flex-col gap-4 p-4">
           <p class="flex flex-wrap gap-2 text-lg">

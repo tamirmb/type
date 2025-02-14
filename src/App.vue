@@ -1,10 +1,17 @@
 <script setup>
 import { ref, watch, onMounted, computed } from "vue";
+import Cookies from "js-cookie";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import words from "./assets/words.json";
 import Toolbar from "@/components/Toolbar.vue";
+
+const COOKIE_OPTIONS = {
+  expires: 30,
+  sameSite: "Lax",
+};
+
 /**
  * State for the typing game
  * @typedef {Object} GameState
@@ -18,7 +25,7 @@ const gameState = ref({
   text: "",
   isStarted: false,
   isFinished: false,
-  wordCount: 25,
+  wordCount: Cookies.get("wordCount") || 25,
   startTime: null,
   endTime: null,
 });
@@ -86,6 +93,7 @@ const generateRandomTargetString = () => {
 
 const setWordCount = (count) => {
   gameState.value.wordCount = count;
+  Cookies.set("wordCount", count, COOKIE_OPTIONS);
   const gameInput = document.getElementById("gameInput");
   gameInput.focus();
   onRestart();

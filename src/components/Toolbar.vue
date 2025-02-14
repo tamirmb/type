@@ -27,7 +27,7 @@ const onSelectWordCount = (count) => {
       <div id="words-group" class="flex gap-2">
         <button
           id="word-option-10"
-          :class="wordCount === 10 ? 'text-black font-bold' : 'text-gray-500'"
+          :class="parseInt(wordCount) === 10 ? 'text-black font-bold' : 'text-gray-500'"
           @click="onSelectWordCount(10)"
         >
           10
@@ -35,7 +35,7 @@ const onSelectWordCount = (count) => {
         <span class="text-gray-500">/</span>
         <button
           id="word-option-25"
-          :class="wordCount === 25 ? 'text-black font-bold' : 'text-gray-500'"
+          :class="parseInt(wordCount) === 25 ? 'text-black font-bold' : 'text-gray-500'"
           @click="onSelectWordCount(25)"
         >
           25
@@ -43,7 +43,7 @@ const onSelectWordCount = (count) => {
         <span class="text-gray-500">/</span>
         <button
           id="word-option-50"
-          :class="wordCount === 50 ? 'text-black font-bold' : 'text-gray-500'"
+          :class="parseInt(wordCount) === 50 ? 'text-black font-bold' : 'text-gray-500'"
           @click="onSelectWordCount(50)"
         >
           50
@@ -51,7 +51,7 @@ const onSelectWordCount = (count) => {
         <span class="text-gray-500">/</span>
         <button
           id="word-option-100"
-          :class="wordCount === 100 ? 'text-black font-bold' : 'text-gray-500'"
+          :class="parseInt(wordCount) === 100 ? 'text-black font-bold' : 'text-gray-500'"
           @click="onSelectWordCount(100)"
         >
           100

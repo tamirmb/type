@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import words from "./assets/words.json";
-import GameToolbar from "@/components/GameToolbar.vue";
+import Toolbar from "@/components/Toolbar.vue";
 /**
  * State for the typing game
  * @typedef {Object} GameState
@@ -125,24 +125,31 @@ watch(
       gameState.value.startTime = Date.now();
     }
 
-    // For the last word, check immediately without requiring space
-    if (
-      gameState.value.targetWordIndex === gameState.value.targetArray.length - 1 &&
-      newText === targetWord.value
-    ) {
+    // Only process word completion when space is pressed or when the last word matches exactly
+    const isLastWord = gameState.value.targetWordIndex === gameState.value.targetArray.length - 1;
+    const enteredWord = newText.trim();
+
+    // Handle last word matching exactly (no space needed)
+    if (isLastWord && newText === targetWord.value) {
       gameState.value.correctStack.push(targetWord.value);
       gameState.value.endTime = Date.now();
       onFinished();
+      return;
     }
-    // For all other words, only check when space is pressed
-    else if (newText.endsWith(" ")) {
-      // Remove the trailing space and compare
-      const enteredWord = newText.trim();
+
+    // Handle word completion on space
+    if (newText.endsWith(" ") && enteredWord !== "") {
       if (enteredWord === targetWord.value) {
         gameState.value.correctStack.push(targetWord.value);
-        getNextTargetWord();
       } else {
         gameState.value.incorrectStack.push(targetWord.value);
+      }
+
+      // If this was the last word, end the game
+      if (isLastWord) {
+        gameState.value.endTime = Date.now();
+        onFinished();
+      } else {
         getNextTargetWord();
       }
       gameState.value.text = "";
@@ -156,16 +163,11 @@ onMounted(() => {
 
   generateRandomTargetString();
 
-  // Add event listener to input element that allows us to pop the last incorrect word when the incorrect stack > 0
   gameInput.addEventListener("keydown", (e) => {
-    if (
-      e.key === "Backspace" &&
-      gameState.value.incorrectStack.length > 0 &&
-      gameState.value.text === ""
-    ) {
-      const lastIncorrect = gameState.value.incorrectStack.pop();
-      gameState.value.targetWordIndex = lastIncorrect.index;
-      gameState.value.text = lastIncorrect.attemptedWord;
+    // Prevent space if there are no ASCII characters
+    if (e.key === " " && (!gameState.value.text || !/[a-zA-Z0-9]/.test(gameState.value.text))) {
+      e.preventDefault();
+      return;
     }
   });
 });
@@ -174,7 +176,7 @@ onMounted(() => {
 <template>
   <main id="game" class="flex flex-col justify-center max-w-lg min-h-screen mx-auto">
     <div class="flex flex-col gap-2">
-      <GameToolbar
+      <Toolbar
         :wordCount="gameState.wordCount"
         :wpm="wpm"
         :accuracy="accuracy"
